@@ -24,13 +24,12 @@ jobs:
       - name: Git clone the repository
         uses: actions/checkout@v3
 
-      - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1.7.0
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           role-session-name: GitHub_to_AWS_via_FederatedOIDC
           aws-region: ${{ secrets.AWS_REGION }}
-          web-identity-token-file: ${{ env.ID_TOKEN_FILE }}
           
       # Hello from AWS: WhoAmI
       - name: Sts GetCallerIdentity

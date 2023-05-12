@@ -1,3 +1,23 @@
+# Here is the create-stack command to run using AWS CLI:
+
+# aws cloudformation create-stack --debug --stack-name containerized-backend --template-body ecs-1.yml --capabilities CAPABILITY_NAMED_IAM \
+# --parameters ParameterKey=VPCID,ParameterValue=MY_VPC_ID \
+# ParameterKey=Subnet1ID,ParameterValue=MY_SUBNET1_ID \
+# ParameterKey=Subnet2ID,ParameterValue=MY_SUBNET2_ID \
+# ParameterKey=DomainName,ParameterValue=MY_NAKED_DOMAIN
+
+# IMPORTANT: Before the create-stack command above can successfully finish running, you must use the ACM service 
+# within the AWS console to retrieve the CNAME entries for api.<your_domain> and add those in whatever domain hosting 
+# provider you use (GoDaddy, NameCheap, etc.).  So the procedure is:
+# 1. Run the create-stack command
+# 2. While the create-stack command is in progress, browse to ACM and retrieve the CNAME record for the certificate that was requested (api.<your_domain>)
+# 3. Add the CNAME in your domain hosting provider
+# 4. Verify that ACM eventually shows the certificate status as "Issued" (takes a few minutes)
+# 5. Use AWS console to verify that the CF stack finishes successfully after that. Or use this command:
+
+#     aws cloudformation describe-stack-events --stack-name containerized-backend
+
+
 AWSTemplateFormatVersion: 2010-09-09
 Parameters:
   Subnet1ID:
@@ -125,9 +145,3 @@ Resources:
         - !Ref Subnet2ID
       SecurityGroups:
         - !GetAtt LoadBalancerSecurityGroup.GroupId
-
-# aws cloudformation create-stack --debug --stack-name containerized-backend --template-body ecs-1.yml --capabilities CAPABILITY_NAMED_IAM \
-# --parameters ParameterKey=VPCID,ParameterValue=MY_VPC_ID \
-# ParameterKey=Subnet1ID,ParameterValue=MY_SUBNET1_ID \
-# ParameterKey=Subnet2ID,ParameterValue=MY_SUBNET2_ID \
-# ParameterKey=DomainName,ParameterValue=MY_NAKED_DOMAIN
